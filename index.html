@@ -1,114 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Trigger Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 24px;
-    }
-    label {
-      font-weight: bold;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      box-sizing: border-box;
-    }
-    input[type="checkbox"] {
-      margin-right: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            margin: 5px;
+        }
+        #selectedData {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>Send an Email</h1>
+<div class="container">
+    <h2>Business Input Form</h2>
 
-  <form id="emailForm">
-    <div class="form-group">
-      <label for="message">Message:</label><br>
-      <textarea id="message" name="message" rows="4" placeholder="Type your message here"></textarea>
-    </div>
+    <form id="businessForm">
+        <!-- Business Name Field -->
+        <label for="businessName">Business Name:</label>
+        <input type="text" id="businessName" name="businessName" required><br><br>
 
-    <div class="form-group">
-      <label>Select Recipients:</label><br>
-      <input type="checkbox" id="recipient1" name="recipients" value="maheedhar1072@gmail.com">
-      <label for="recipient1">Recipient 1</label><br>
-      <input type="checkbox" id="recipient2" name="recipients" value="tech@pathwaycatalyst.com">
-      <label for="recipient2">Recipient 2</label><br>
-      <input type="checkbox" id="recipient3" name="recipients" value="deals@pathwaycatalyst.com">
-      <label for="recipient3">Recipient 3</label><br>
-    </div>
+        <!-- Buttons for Selection -->
+        <div class="buttons">
+            <label>Select a button to input data:</label><br>
+            <button type="button" onclick="selectButton(1)">Button 1</button>
+            <button type="button" onclick="selectButton(2)">Button 2</button>
+            <button type="button" onclick="selectButton(3)">Button 3</button>
+            <button type="button" onclick="selectButton(4)">Button 4</button>
+            <button type="button" onclick="selectButton(5)">Button 5</button>
+            <button type="button" onclick="selectButton(6)">Button 6</button>
+            <button type="button" onclick="selectButton(7)">Button 7</button>
+            <button type="button" onclick="selectButton(8)">Button 8</button>
+            <button type="button" onclick="selectButton(9)">Button 9</button>
+            <button type="button" onclick="selectButton(10)">Button 10</button>
+        </div>
 
-    <button type="submit">Send Email</button>
-  </form>
+        <!-- Input for Data -->
+        <label for="inputData">Enter Data for Selected Button:</label><br>
+        <input type="text" id="inputData" name="inputData"><br><br>
 
-  <script>
-    document.getElementById('emailForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
+        <!-- Field to See Data -->
+        <label for="selectedData">Selected Button Data:</label><br>
+        <textarea id="selectedData" rows="5" cols="50" readonly></textarea><br><br>
 
-      // Validate the message content
-      const message = document.getElementById('message').value.trim();
-      const recipients = Array.from(document.querySelectorAll('input[name="recipients"]:checked')).map(el => el.value);
+        <!-- Submit Button -->
+        <button type="submit">Submit</button>
+    </form>
+</div>
 
-      if (!message) {
-        alert("Please enter a message.");
-        return;
-      }
+<script>
+    let selectedButton = null;
+    const buttonData = {};
 
-      if (recipients.length === 0) {
-        alert("Please select at least one recipient.");
-        return;
-      }
+    function selectButton(buttonNumber) {
+        selectedButton = buttonNumber;
+        document.getElementById("selectedData").value = buttonData[buttonNumber] || '';
+        alert(`Button ${buttonNumber} selected`);
+    }
 
-      // Prepare the data to send to the backend
-      const data = {
-        message,
-        recipients
-      };
-
-      try {
-        // Send the data to the backend (Node.js server)
-        const response = await fetch('http://localhost:3000/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          alert('Email trigger sent successfully!');
-          document.getElementById('emailForm').reset(); // Reset form after successful submission
+    document.getElementById('inputData').addEventListener('input', function (event) {
+        if (selectedButton !== null) {
+            buttonData[selectedButton] = event.target.value;
+            document.getElementById("selectedData").value = event.target.value;
         } else {
-          alert('Error triggering the email.');
+            alert('Please select a button first!');
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to send the request.');
-      }
     });
-  </script>
+
+    document.getElementById("businessForm").addEventListener('submit', function (event) {
+        event.preventDefault();
+        console.log("Business Name:", document.getElementById('businessName').value);
+        console.log("Button Data:", buttonData);
+        alert('Form Submitted');
+    });
+</script>
 
 </body>
 </html>
