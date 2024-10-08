@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Trigger Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Send an Email</h1>
+
+  <form id="emailForm">
+    <div class="form-group">
+      <label for="message">Message:</label><br>
+      <textarea id="message" name="message" rows="4" placeholder="Type your message here"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Select Recipients:</label><br>
+      <input type="checkbox" id="recipient1" name="recipients" value="maheedhar1072@gmail.com">
+      <label for="recipient1">Recipient 1</label><br>
+      <input type="checkbox" id="recipient2" name="recipients" value="tech@pathwaycatalyst.com">
+      <label for="recipient2">Recipient 2</label><br>
+      <input type="checkbox" id="recipient3" name="recipients" value="deals@pathwaycatalyst.com">
+      <label for="recipient3">Recipient 3</label><br>
+    </div>
+
+    <button type="submit">Send Email</button>
+  </form>
+
+  <script>
+    document.getElementById('emailForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      // Validate the message content
+      const message = document.getElementById('message').value.trim();
+      const recipients = Array.from(document.querySelectorAll('input[name="recipients"]:checked')).map(el => el.value);
+
+      if (!message) {
+        alert("Please enter a message.");
+        return;
+      }
+
+      if (recipients.length === 0) {
+        alert("Please select at least one recipient.");
+        return;
+      }
+
+      // Prepare the data to send to the backend
+      const data = {
+        message,
+        recipients
+      };
+
+      try {
+        // Send the data to the backend (Node.js server)
+        const response = await fetch('http://localhost:3000/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          alert('Email trigger sent successfully!');
+          document.getElementById('emailForm').reset(); // Reset form after successful submission
+        } else {
+          alert('Error triggering the email.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send the request.');
+      }
+    });
+  </script>
+
+</body>
+</html>
