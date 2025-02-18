@@ -21,6 +21,19 @@
         #selectedData {
             margin-top: 10px;
         }
+        .pdf-list {
+            margin-top: 15px;
+        }
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+        .pdf-item a {
+            text-decoration: none;
+            color: blue;
+        }
     </style>
 </head>
 <body>
@@ -39,13 +52,6 @@
             <button type="button" onclick="selectButton(1)">Button 1</button>
             <button type="button" onclick="selectButton(2)">Button 2</button>
             <button type="button" onclick="selectButton(3)">Button 3</button>
-            <button type="button" onclick="selectButton(4)">Button 4</button>
-            <button type="button" onclick="selectButton(5)">Button 5</button>
-            <button type="button" onclick="selectButton(6)">Button 6</button>
-            <button type="button" onclick="selectButton(7)">Button 7</button>
-            <button type="button" onclick="selectButton(8)">Button 8</button>
-            <button type="button" onclick="selectButton(9)">Button 9</button>
-            <button type="button" onclick="selectButton(10)">Button 10</button>
         </div>
 
         <!-- Input for Data -->
@@ -56,6 +62,13 @@
         <label for="selectedData">Selected Button Data:</label><br>
         <textarea id="selectedData" rows="5" cols="50" readonly></textarea><br><br>
 
+        <!-- PDF Upload Section -->
+        <label for="pdfUpload">Upload PDF Files:</label><br>
+        <input type="file" id="pdfUpload" accept="application/pdf"><br><br>
+
+        <!-- List of Uploaded PDFs -->
+        <div class="pdf-list" id="pdfList"></div>
+
         <!-- Submit Button -->
         <button type="submit">Submit</button>
     </form>
@@ -64,6 +77,7 @@
 <script>
     let selectedButton = null;
     const buttonData = {};
+    const pdfFiles = [];
 
     function selectButton(buttonNumber) {
         selectedButton = buttonNumber;
@@ -84,8 +98,44 @@
         event.preventDefault();
         console.log("Business Name:", document.getElementById('businessName').value);
         console.log("Button Data:", buttonData);
+        console.log("Uploaded PDFs:", pdfFiles);
         alert('Form Submitted');
     });
+
+    document.getElementById("pdfUpload").addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file && file.type === "application/pdf") {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const fileURL = e.target.result;
+                pdfFiles.push({ name: file.name, url: fileURL });
+                displayPDFs();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please upload a valid PDF file.");
+        }
+    });
+
+    function displayPDFs() {
+        const pdfListDiv = document.getElementById("pdfList");
+        pdfListDiv.innerHTML = "<h3>Uploaded PDFs:</h3>";
+
+        pdfFiles.forEach((pdf, index) => {
+            const pdfItem = document.createElement("div");
+            pdfItem.classList.add("pdf-item");
+            pdfItem.innerHTML = `
+                <a href="${pdf.url}" target="_blank">${pdf.name}</a>
+                <button onclick="removePDF(${index})">Remove</button>
+            `;
+            pdfListDiv.appendChild(pdfItem);
+        });
+    }
+
+    function removePDF(index) {
+        pdfFiles.splice(index, 1);
+        displayPDFs();
+    }
 </script>
 
 </body>
