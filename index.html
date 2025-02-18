@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Form</title>
+    <title>Business Submission Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,12 +39,20 @@
 <body>
 
 <div class="container">
-    <h2>Business Input Form</h2>
+    <h2>Business Submission Form</h2>
 
     <form id="businessForm">
-        <!-- Business Name Field -->
+        <!-- Business Name -->
         <label for="businessName">Business Name:</label>
         <input type="text" id="businessName" name="businessName" required><br><br>
+
+        <!-- Lender Name -->
+        <label for="lenderName">Lender Name:</label>
+        <input type="text" id="lenderName" name="lenderName" required><br><br>
+
+        <!-- Deal ID -->
+        <label for="dealId">Deal ID:</label>
+        <input type="text" id="dealId" name="dealId" required><br><br>
 
         <!-- Buttons for Selection -->
         <div class="buttons">
@@ -94,14 +102,6 @@
         }
     });
 
-    document.getElementById("businessForm").addEventListener('submit', function (event) {
-        event.preventDefault();
-        console.log("Business Name:", document.getElementById('businessName').value);
-        console.log("Button Data:", buttonData);
-        console.log("Uploaded PDFs:", pdfFiles);
-        alert('Form Submitted');
-    });
-
     document.getElementById("pdfUpload").addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file && file.type === "application/pdf") {
@@ -136,6 +136,29 @@
         pdfFiles.splice(index, 1);
         displayPDFs();
     }
+
+    document.getElementById("businessForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const businessName = document.getElementById("businessName").value;
+        const lenderName = document.getElementById("lenderName").value;
+        const dealid = document.getElementById("dealId").value;
+
+        // Collect PDF links
+        const pdfElements = document.querySelectorAll(".pdf-item a");
+        const docs = Array.from(pdfElements).map((pdf) => pdf.href);
+
+        const response = await fetch("https://your-render-app-url.onrender.com/send-email", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ businessName, lenderName, dealid, buttonData, docs }),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+    });
 </script>
 
 </body>
