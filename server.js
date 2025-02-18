@@ -15,16 +15,9 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 
 // Predefined email mappings for buttons (Modify as needed)
 const buttonEmails = {
-    1: "email1@example.com",
-    2: "email2@example.com",
-    3: "email3@example.com",
-    4: "email4@example.com",
-    5: "email5@example.com",
-    6: "email6@example.com",
-    7: "email7@example.com",
-    8: "email8@example.com",
-    9: "email9@example.com",
-    10: "email10@example.com",
+    1: "govadamaheedhar@gmail.com",
+    2: "tech@pathwaycatalyst.com",
+    3: "gmaheedhar7@gmail.com",
 };
 
 // Configure email transporter (Using Gmail)
