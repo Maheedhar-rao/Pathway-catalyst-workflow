@@ -1,0 +1,16 @@
+{
+  "name": "Pathway-catalyst-workflow",
+  "version": "1.0.0",
+  "description": "Backend for business form email notifications and Supabase integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.1",
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}
