@@ -148,7 +148,7 @@
         const pdfElements = document.querySelectorAll(".pdf-item a");
         const docs = Array.from(pdfElements).map((pdf) => pdf.href);
 
-        const response = await fetch("https://your-render-app-url.onrender.com/send-email", {
+        const response = await fetch("https://pathway-catalyst-workflow.onrender.com", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
