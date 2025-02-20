@@ -59,6 +59,15 @@ let transporter = nodemailer.createTransport({
 // Function to insert submission data into Supabase
 async function saveToSupabase(businessName, lenderNames, docLinks) {
     try {
+        // Ensure lenderNames is an array
+        if (!Array.isArray(lenderNames)) {
+            lenderNames = typeof lenderNames === 'string' ? [lenderNames] : [];
+        }
+
+        // Ensure docLinks is an array
+        if (!Array.isArray(docLinks)) {
+            docLinks = typeof docLinks === 'string' ? [docLinks] : [];
+        }
         const { data, error } = await supabase
             .from('Live submissions')
             .insert([
@@ -89,6 +98,8 @@ app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
     try {
         const { businessName, enteredData, selectedOptions } = req.body;
         const emailConfig = getEmailConfig();
+        let selectedLenders = Array.isArray(selectedOptions) ? selectedOptions : [selectedOptions];
+
 
         // Process uploaded files
         let fileLinks = req.files.map(file => {
