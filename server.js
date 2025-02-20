@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
-const xlsx = require('xlsx');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
