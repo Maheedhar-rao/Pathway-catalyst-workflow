@@ -1,89 +1,136 @@
-require("dotenv").config();
-const express = require("express");
-const nodemailer = require("nodemailer");
-const cors = require("cors");
-const { createClient } = require("@supabase/supabase-js");
-
+const express = require('express');
+const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+const xlsx = require('xlsx');
 const app = express();
+require('dotenv').config();
+const cors = require('cors');
+app.use(cors());
+const { createClient } = require("@supabase/supabase-js");
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json({ limit: '25mb' }));
-app.use(cors({ limit: '25mb', extended: true })); // Enable CORS for frontend requests
+app.use(bodyParser.json({ limit: '120mb' }));
+app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
+app.use(express.static('public'));  // Serve static files from 'public' directory
+const path = require('path');
 
-// Initialize Supabase Client
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
+
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 
+// Load emails from the JSON file
+function getEmailConfig() {
+    const rawData = fs.readFileSync('lender-emails.json', 'utf8');
+    const emailData = JSON.parse(rawData);
 
-// Predefined email mappings for buttons (Modify as needed)
-const buttonEmails = {
-    1: "govadamaheedhar@gmail.com",
-    2: "tech@pathwaycatalyst.com",
-    3: "gmaheedhar7@gmail.com",
-};
+    const emailConfig = {};
 
-// Configure email transporter (Using Gmail)
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
-
-app.get("/", (req, res) => {
-    res.send("Server is running! Welcome to Pathway Catalyst Workflow API.");
-});
-
-// API endpoint to handle form submission
-app.post("/send-email", async (req, res) => {
-    const { businessName, lenderName, dealid, buttonData, docs } = req.body;
-    let successCount = 0;
-    let failureCount = 0;
-
-    try {
-        for (const [button, message] of Object.entries(buttonData)) {
-            if (buttonEmails[button]) {
-                try {
-                    // Send email
-                    await transporter.sendMail({
-                        from: process.env.EMAIL_USER,
-                        to: buttonEmails[button],
-                        subject: `New Submission from ${businessName}`,
-                        text: `Business: ${businessName}\nLender: ${lenderName}\nDeal ID: ${dealid}\nButton ${button} selected.\nMessage: ${message}`,
-                    });
-
-                    // Store submission in Supabase
-                    await supabase.from("live_submissions").insert([
-                        {
-                            business_name: businessName,
-                            lender_name: lenderName,
-                            dealid: dealid,
-                            button_number: parseInt(button),
-                            message: message,
-                            docs: JSON.stringify(docs), // Store PDF links as JSON
-                            created_at: new Date(),
-                        },
-                    ]);
-
-                    successCount++;
-                } catch (emailError) {
-                    console.error(`Failed to send email for Button ${button}:`, emailError);
-                    failureCount++;
-                }
-            }
+    emailData.emails.forEach(entry => {
+        if (entry.business_name && entry.email) {
+            const emails = entry.email.split(',').map(email => email.trim()); 
+            emailConfig[entry.business_name] = {
+                to: emails[0],  // First email as primary recipient
+                cc: emails.slice(1)  // Remaining emails as CC
+            };
         }
+    });
 
-        res.status(200).json({
-            message: `Emails sent: ${successCount}, Failed: ${failureCount}`,
-        });
-    } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ message: "Server error", error });
+    return emailConfig;
+}
+
+module.exports = getEmailConfig;
+
+
+// Set up Nodemailer transporter using Gmail SMTP server
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,   // email address
+        pass: process.env.EMAIL_PASS       // App password
     }
 });
 
-// Start the server
+// Function to insert submission data into Supabase
+async function saveToSupabase(businessName, lenderNames, docLinks) {
+    try {
+        const { data, error } = await supabase
+            .from('Live submissions')
+            .insert([
+                {
+                    business_name: businessName,
+                    lender_names: lenderNames.join(', '),
+                    docs: docLinks.join(', ') // Storing file links in comma-separated format
+                }
+            ]);
+
+        if (error) {
+            console.error('Error inserting into Supabase:', error);
+            return { success: false, error };
+        }
+        console.log('Saved to Supabase:', data);
+        return { success: true, data };
+    } catch (err) {
+        console.error('Unexpected error saving to Supabase:', err);
+        return { success: false, error: err };
+    }
+}
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+// Endpoint to handle submissions
+app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
+    try {
+        const { businessName, enteredData, selectedOptions } = req.body;
+        const emailConfig = getEmailConfig();
+
+        // Process uploaded files
+        let fileLinks = req.files.map(file => {
+            return `https://ejdqjzzvhksrjjazqhug.supabase.co/storage/v1/object/public/Pdf%20docs/Apps%20and%20statements/${file.filename}`; // Modify this with your Supabase storage bucket
+        });
+
+        // Store submission in Supabase
+        const saveResult = await saveToSupabase(businessName, selectedOptions, fileLinks);
+        if (!saveResult.success) {
+            return res.status(500).json({ message: 'Error saving submission', error: saveResult.error });
+        }
+
+        // Send emails
+        const sendEmailPromises = selectedOptions.map(optionKey => {
+            const option = emailConfig[optionKey];
+            if (!option) return Promise.resolve();
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: [option.to, 'maheedharrao.ls140@gmail.com'],
+                cc: option.cc,
+                subject: `Croc Submissions - Client Name - ${businessName}`,
+                text: `${enteredData}\n\nAttached files:\n${fileLinks.join('\n')}`,
+                attachments: req.files.map(file => ({
+                    filename: file.originalname,
+                    path: file.path
+                }))
+            };
+
+            return transporter.sendMail(mailOptions);
+        });
+
+        await Promise.all(sendEmailPromises);
+        res.json({ message: 'Submission successful!' });
+
+    } catch (error) {
+        console.error('Error handling submission:', error);
+        res.status(500).json({ message: 'Submission failed', error });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
