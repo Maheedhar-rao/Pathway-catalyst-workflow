@@ -7,8 +7,8 @@ const { createClient } = require("@supabase/supabase-js");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
-app.use(cors()); // Enable CORS for frontend requests
+app.use(express.json({ limit: '25mb' }));
+app.use(cors({ limit: '25mb', extended: true })); // Enable CORS for frontend requests
 
 // Initialize Supabase Client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
