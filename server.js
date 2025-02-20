@@ -13,6 +13,8 @@ app.use(cors({ limit: '25mb', extended: true })); // Enable CORS for frontend re
 // Initialize Supabase Client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+
+
 // Predefined email mappings for buttons (Modify as needed)
 const buttonEmails = {
     1: "govadamaheedhar@gmail.com",
@@ -27,6 +29,10 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
+});
+
+app.get("/", (req, res) => {
+    res.send("Server is running! Welcome to Pathway Catalyst Workflow API.");
 });
 
 // API endpoint to handle form submission
