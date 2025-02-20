@@ -126,6 +126,7 @@
         <div class="file-upload" onclick="document.getElementById('file-upload').click();">Drag & Drop or Click to Upload</div>
         <input type="file" id="file-upload" accept=".pdf,.doc,.docx,.jpg,.png" multiple hidden>
         <p>File limit: 25MB</p>
+        <div id="file-list"></div>
         
         <h3>Adjust your message to your lenders</h3>
         <textarea id="message-box" style="height: 120px;">Good afternoon, Please review this file for underwriting. Thank you.</textarea>
@@ -157,6 +158,75 @@
             const selected = [...document.querySelectorAll('.lender.selected')].map(el => el.textContent);
             document.getElementById('selected-lenders').innerHTML = selected.length ? selected.join('<br>') : 'None selected';
         }
+        const selectedFiles = [];
+
+        document.getElementById('file-upload').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+    let totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+
+    for (let file of files) {
+        totalSize += file.size;
+        
+        // Prevent total size exceeding 25MB
+        if (totalSize > 25 * 1024 * 1024) {
+            alert('Total file size exceeds 25MB. Please remove some files.');
+            return;
+        }
+
+        selectedFiles.push(file);
+    }
+
+    document.getElementById('file-upload').value = ''; // Reset file input
+    updateFileList();
+});
+
+
+function updateFileList() {
+    const fileListDiv = document.getElementById('file-list');
+    fileListDiv.innerHTML = ''; // Clear previous files
+
+    selectedFiles.forEach((file, index) => {
+        const listItem = document.createElement('div');
+        listItem.style.display = 'flex';
+        listItem.style.alignItems = 'center';
+        listItem.style.justifyContent = 'center';
+        listItem.style.marginBottom = '8px';
+        listItem.style.fontSize = '14px';
+        listItem.style.fontWeight = 'bold';
+
+        // Display image preview if it's an image
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.style.width = '50px';
+            img.style.height = '50px';
+            img.style.borderRadius = '6px';
+            img.style.marginRight = '10px';
+            img.onload = () => URL.revokeObjectURL(img.src);
+            listItem.appendChild(img);
+        }
+
+        // File name
+        const fileName = document.createElement('span');
+        fileName.textContent = file.name;
+        listItem.appendChild(fileName);
+
+        // Remove Button (❌)
+        const removeBtn = document.createElement('span');
+        removeBtn.innerHTML = ' ❌';
+        removeBtn.style.cursor = 'pointer';
+        removeBtn.style.color = 'red';
+        removeBtn.style.marginLeft = '10px';
+        removeBtn.onclick = function () {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+        };
+        listItem.appendChild(removeBtn);
+
+        fileListDiv.appendChild(listItem);
+    });
+}
+
 
         function submitForm() {
     const businessName = document.getElementById('business-name').value;
@@ -179,7 +249,7 @@
     formData.append('enteredData', message);
     selectedLenders.forEach(lender => formData.append('selectedOptions', lender));
 
-    for (let file of fileInput.files) {
+    for (let file of selectedFiles) {
         formData.append('attachments', file);
     }
 
