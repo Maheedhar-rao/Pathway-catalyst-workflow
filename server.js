@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
 app.use(express.static('public'));  // Serve static files from 'public' directory
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname,'Frontend')));
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'Frontend', 'index.html'));
 });
 
 
