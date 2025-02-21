@@ -89,16 +89,19 @@ app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
     try {
         const { businessName, enteredData, selectedOptions } = req.body;
         const emailConfig = getEmailConfig();
-        
+
         let selectedLenders = Array.isArray(selectedOptions) ? selectedOptions : (selectedOptions ? [selectedOptions] : []);
 
         // Upload PDFs to Supabase Storage
         let uploadedFiles = [];
         for (let file of req.files) {
+            const filePath = `submissions/${Date.now()}_${file.originalname}`;
+
+            // Upload file to Supabase
             const { data, error } = await supabase
                 .storage
                 .from('Pdf docs/Apps and statements')
-                .upload(`submissions/${Date.now()}_${file.originalname}`, file.buffer, {
+                .upload(filePath, file.buffer, {
                     contentType: file.mimetype,
                     upsert: true
                 });
@@ -111,22 +114,22 @@ app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
             // Retrieve public URL of uploaded file
             const fileUrl = supabase.storage
                 .from('Pdf docs/Apps and statements')
-                .getPublicUrl(data.path);
-            
+                .getPublicUrl(filePath);
+
             uploadedFiles.push({
                 name: file.originalname,
                 path: fileUrl.publicURL
             });
         }
 
-        // Store submission in Supabase Database
+        // ✅ Store submission in Supabase Database (Including the Message)
         const fileLinks = uploadedFiles.map(file => file.path);
-        const saveResult = await saveToSupabase(businessName, selectedLenders, fileLinks);
+        const saveResult = await saveToSupabase(businessName, selectedLenders, fileLinks, enteredData);
         if (!saveResult.success) {
             return res.status(500).json({ message: 'Error saving submission', error: saveResult.error });
         }
 
-        // Send emails with PDFs attached
+        // ✅ Send emails with PDFs attached
         const sendEmailPromises = selectedLenders.map(optionKey => {
             const option = emailConfig[optionKey];
 
@@ -142,10 +145,11 @@ app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
                 to: [option.to, 'maheedharrao.ls140@gmail.com'],
                 cc: option.cc,
                 subject: `Croc Submissions - Client Name - ${businessName}`,
-                text: `${enteredData}\n\nAttached files: ${uploadedFiles.map(file => file.name).join(', ')}`,
-                attachments: uploadedFiles.map(file => ({
-                    filename: file.name,
-                    path: file.path
+                text: `${enteredData}\n\nStips Attached:\n${uploadedFiles.map(file => file.name).join('\n')}`,
+                attachments: req.files.map(file => ({
+                    filename: file.originalname,
+                    content: file.buffer, // ✅ Attaching file buffer instead of just a link
+                    contentType: file.mimetype
                 }))
             };
 
@@ -163,6 +167,7 @@ app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
         res.status(500).json({ message: "Submission failed", error });
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
