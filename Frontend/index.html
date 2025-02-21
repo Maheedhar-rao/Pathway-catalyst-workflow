@@ -228,12 +228,11 @@ function updateFileList() {
 }
 
 
-        function submitForm() {
+function submitForm() {
     const businessName = document.getElementById('business-name').value;
     const selectedLenders = [...document.querySelectorAll('.lender.selected')].map(el => el.textContent);
     const message = document.getElementById('message-box').value;
-    const fileInput = document.getElementById('file-upload');
-    const formData = new FormData();
+    const submitButton = document.querySelector('.submit-btn');
 
     if (!businessName) {
         alert('Please enter a business name.');
@@ -245,6 +244,12 @@ function updateFileList() {
         return;
     }
 
+    // Disable the button & show processing state
+    submitButton.disabled = true;
+    submitButton.style.background = '#ccc';
+    submitButton.textContent = 'Hold On...';
+
+    const formData = new FormData();
     formData.append('businessName', businessName);
     formData.append('enteredData', message);
     selectedLenders.forEach(lender => formData.append('selectedOptions', lender));
@@ -258,9 +263,26 @@ function updateFileList() {
         body: formData
     })
     .then(response => response.json())
-    .then(data => alert(data.message))
-    .catch(error => console.error('Error:', error));
+    .then(data => {
+        if (data.message === 'Submission successful!') {
+            alert('Submission successful! Redirecting to Thank You page...');
+            window.location.href = '/thank-you.html';  // Redirect to Thank You page
+        } else {
+            alert('Something went wrong! Please try again.');
+            submitButton.disabled = false;
+            submitButton.style.background = 'linear-gradient(to right, #ff512f, #dd2476)';
+            submitButton.textContent = 'Submit';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting. Please try again.');
+        submitButton.disabled = false;
+        submitButton.style.background = 'linear-gradient(to right, #ff512f, #dd2476)';
+        submitButton.textContent = 'Submit';
+    });
 }
+
 
     </script>
 </body>
