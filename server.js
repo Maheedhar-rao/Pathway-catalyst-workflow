@@ -55,7 +55,7 @@ let transporter = nodemailer.createTransport({
 });
 
 // Function to insert submission data into Supabase
-async function saveToSupabase(businessName, lenderNames, docLinks) {
+async function saveToSupabase(businessName, lenderNames, docLinks, message) {
     try {
         lenderNames = Array.isArray(lenderNames) ? lenderNames : (lenderNames ? [lenderNames] : []);
         docLinks = Array.isArray(docLinks) ? docLinks : (docLinks ? [docLinks] : []);
@@ -66,7 +66,8 @@ async function saveToSupabase(businessName, lenderNames, docLinks) {
                 {
                     business_name: businessName,
                     lender_names: lenderNames.join(', '),
-                    docs: docLinks.join(', ')
+                    docs: docLinks.join(', '),
+                    message: message
                 }
             ]);
 
@@ -84,25 +85,48 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 // Endpoint to handle form submissions
-app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
+app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
     try {
         const { businessName, enteredData, selectedOptions } = req.body;
         const emailConfig = getEmailConfig();
         
         let selectedLenders = Array.isArray(selectedOptions) ? selectedOptions : (selectedOptions ? [selectedOptions] : []);
 
-        // Process uploaded files
-        let fileLinks = req.files.map(file => {
-            return `https://ejdqjzzvhksrjjazqhug.supabase.co/storage/v1/object/public/Pdf%20docs/Apps%20and%20statements/${file.filename}`;
-        });
+        // Upload PDFs to Supabase Storage
+        let uploadedFiles = [];
+        for (let file of req.files) {
+            const { data, error } = await supabase
+                .storage
+                .from('Pdf docs/Apps and statements')
+                .upload(`submissions/${Date.now()}_${file.originalname}`, file.buffer, {
+                    contentType: file.mimetype,
+                    upsert: true
+                });
 
-        // Store submission in Supabase
+            if (error) {
+                console.error("Error uploading to Supabase:", error);
+                return res.status(500).json({ message: 'Error uploading files', error });
+            }
+
+            // Retrieve public URL of uploaded file
+            const fileUrl = supabase.storage
+                .from('Pdf docs/Apps and statements')
+                .getPublicUrl(data.path);
+            
+            uploadedFiles.push({
+                name: file.originalname,
+                path: fileUrl.publicURL
+            });
+        }
+
+        // Store submission in Supabase Database
+        const fileLinks = uploadedFiles.map(file => file.path);
         const saveResult = await saveToSupabase(businessName, selectedLenders, fileLinks);
         if (!saveResult.success) {
             return res.status(500).json({ message: 'Error saving submission', error: saveResult.error });
         }
 
-        // Send emails
+        // Send emails with PDFs attached
         const sendEmailPromises = selectedLenders.map(optionKey => {
             const option = emailConfig[optionKey];
 
@@ -118,9 +142,9 @@ app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
                 to: [option.to, 'maheedharrao.ls140@gmail.com'],
                 cc: option.cc,
                 subject: `Croc Submissions - Client Name - ${businessName}`,
-                text: `${enteredData}\n\nAttached files:\n${fileLinks.join('\n')}`,
-                attachments: req.files.map(file => ({
-                    filename: file.originalname,
+                text: `${enteredData}\n\nAttached files: ${uploadedFiles.map(file => file.name).join(', ')}`,
+                attachments: uploadedFiles.map(file => ({
+                    filename: file.name,
                     path: file.path
                 }))
             };
