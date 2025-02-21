@@ -138,8 +138,7 @@ app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
         .then(info => console.log(`Email sent: ${info.response}`))
         .catch(error => console.error(`Error sending email:`, error));
 });
-
-
+ }
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
