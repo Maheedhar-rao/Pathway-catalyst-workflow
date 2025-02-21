@@ -266,7 +266,7 @@ function submitForm() {
     .then(data => {
         if (data.message === 'Submission successful!') {
             alert('Submission successful! Redirecting to Thank You page...');
-            window.location.href = '/thank-you.html';  // Redirect to Thank You page
+            window.location.href = 'Frontend/thank-you.html';  // Redirect to Thank You page
         } else {
             alert('Something went wrong! Please try again.');
             submitButton.disabled = false;
