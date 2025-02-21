@@ -112,34 +112,33 @@ app.post('/send-email', upload.array('attachments', 5), async (req, res) => {
             return res.status(500).json({ message: 'Error saving submission', error: saveResult.error });
         }
 
-        // Send emails
-        const sendEmailPromises = selectedOptions.map(optionKey => {
-            const option = emailConfig[optionKey];
-            if (!option) return Promise.resolve();
+        const sendEmailPromises = selectedLenders.map(optionKey => {
+    const option = emailConfig[optionKey];
 
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: [option.to, 'maheedharrao.ls140@gmail.com'],
-                cc: option.cc,
-                subject: `Croc Submissions - Client Name - ${businessName}`,
-                text: `${enteredData}\n\nAttached files:\n${fileLinks.join('\n')}`,
-                attachments: req.files.map(file => ({
-                    filename: file.originalname,
-                    path: file.path
-                }))
-            };
-
-            return transporter.sendMail(mailOptions);
-        });
-
-        await Promise.all(sendEmailPromises);
-        res.json({ message: 'Submission successful!' });
-
-    } catch (error) {
-        console.error('Error handling submission:', error);
-        res.status(500).json({ message: 'Submission failed', error });
+    if (!option) {
+        console.error(`No email config found for lender: ${optionKey}`);
+        return Promise.resolve(); // Skip sending for missing email configurations
     }
+
+    console.log(`Sending email to: ${option.to} with CC: ${option.cc}`);
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: [option.to, 'maheedharrao.ls140@gmail.com'],
+        cc: option.cc,
+        subject: `Croc Submissions - Client Name - ${businessName}`,
+        text: `${enteredData}\n\nAttached files:\n${fileLinks.join('\n')}`,
+        attachments: req.files.map(file => ({
+            filename: file.originalname,
+            path: file.path
+        }))
+    };
+
+    return transporter.sendMail(mailOptions)
+        .then(info => console.log(`Email sent: ${info.response}`))
+        .catch(error => console.error(`Error sending email:`, error));
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
