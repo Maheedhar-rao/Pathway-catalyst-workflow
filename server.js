@@ -6,6 +6,8 @@ const app = express();
 require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
+const getEmailHeaders = require("./emailheaders");
+const headers = getEmailHeaders(previousMessageId);
 const { createClient } = require("@supabase/supabase-js");
 const PORT = process.env.PORT || 5000;
 
@@ -146,6 +148,7 @@ app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
                 cc: option.cc,
                 subject: `Croc Submissions - Client Name - ${businessName}`,
                 text: `${enteredData}\n\nStips Attached:\n${uploadedFiles.map(file => file.name).join('\n')}`,
+                headers,
                 attachments: req.files.map(file => ({
                     filename: file.originalname,
                     content: file.buffer, // ✅ Attaching file buffer instead of just a link
