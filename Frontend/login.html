@@ -1,60 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>🐊 CROC || Login </title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8" />
+  <title>🐊 CROC | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #2c3e50, #4ca1af);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #2c3e50;
+    }
+
+    p.info {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #4ca1af;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #4ca1af;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #357a8a;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #e74c3c;
+    }
+  </style>
 </head>
 <body>
-  <h2>🐊 Login to Your CRM</h2>
-  <div id="g_id_onload"
-       data-client_id="YOUR_GOOGLE_CLIENT_ID"
-       data-callback="handleCredentialResponse">
+  <div class="container">
+    <h2>🐊 Login to Your CRM</h2>
+    <p class="info">Please log in using the email you registered with and the password sent to your inbox.</p>
+
+    <form id="login-form">
+      <input type="email" id="email" required placeholder="Enter your email" />
+      <input type="password" id="password" required placeholder="Enter your password" />
+      <button type="submit">Login</button>
+    </form>
+
+    <p id="message"></p>
   </div>
-  <div class="g_id_signin" data-type="standard"></div>
 
   <script>
-    async function handleCredentialResponse(response) {
-      const idToken = response.credential;
-      localStorage.setItem("id_token", idToken);
+    document.getElementById("login-form").onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      const res = await fetch("/api/me", {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        window.location.href = "/Frontend/dashboard.html";
+        localStorage.setItem("id_token", data.token);
+        window.location.href = "/frontend/dashboard.html";
       } else {
-        alert("❌ You're not authorized to use this CRM yet.");
-        localStorage.removeItem("id_token");
+        document.getElementById("message").textContent = data.error || "Login failed. Please try again.";
       }
-    }
-    fetch('/api/config')
-    .then(res => res.json())
-    .then(config => {
-      const script = document.createElement('script');
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-
-      script.onload = () => {
-        window.onload = () => {
-          google.accounts.id.initialize({
-            client_id: config.googleClientId,
-            callback: handleCredentialResponse
-          });
-          google.accounts.id.renderButton(
-            document.getElementById("g_id_signin"),
-            { theme: "outline", size: "large" }
-          );
-        };
-      };
-    });
-
-
+    };
   </script>
-  <div id="g_id_signin"></div>
 </body>
 </html>
