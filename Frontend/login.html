@@ -30,6 +30,31 @@
         localStorage.removeItem("id_token");
       }
     }
+    fetch('/api/config')
+    .then(res => res.json())
+    .then(config => {
+      const script = document.createElement('script');
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        window.onload = () => {
+          google.accounts.id.initialize({
+            client_id: config.googleClientId,
+            callback: handleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+            document.getElementById("g_id_signin"),
+            { theme: "outline", size: "large" }
+          );
+        };
+      };
+    });
+
+
   </script>
+  <div id="g_id_signin"></div>
 </body>
 </html>
