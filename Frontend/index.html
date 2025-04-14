@@ -1,22 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sign Up | CRM</title>
+  <meta charset="UTF-8" />
+  <title>Sign Up | CROC CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #2c3e50, #4ca1af);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #2c3e50;
+    }
+
+    input[type="email"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #4ca1af;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #4ca1af;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #357a8a;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      font-size: 14px;
+      display: block;
+      color: #2c3e50;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h2>🐊 Sign Up for CROC</h2>
-  <form id="signup-form">
-    <input type="email" id="email" required placeholder="Enter your email" />
-    <button type="submit">Send Verification Code</button>
-  </form>
+  <div class="container">
+    <h2>🐊 Sign Up for CROC</h2>
+    <form id="signup-form">
+      <input type="email" id="email" required placeholder="Enter your email" />
+      <button type="submit">Send Verification Code</button>
+    </form>
 
-  <div id="code-area" style="display:none;">
-    <input type="text" id="code" maxlength="6" placeholder="Enter 6-digit code" />
-    <button onclick="verifyCode()">Verify Code</button>
+    <div id="code-area" class="hidden">
+      <input type="text" id="code" maxlength="6" placeholder="Enter 6-digit code" />
+      <button type="button" onclick="verifyCode()">Verify Code</button>
+    </div>
+
+    <p id="message"></p>
+
+    <span class="login-link" onclick="goToLogin()">🔐 Already have an account? Log in</span>
   </div>
-
-  <p id="message"></p>
 
   <script>
     let currentEmail = "";
@@ -32,8 +122,8 @@
         body: JSON.stringify({ email })
       });
 
-      document.getElementById('code-area').style.display = 'block';
-      document.getElementById('message').textContent = "📨 Code sent to email.";
+      document.getElementById('code-area').classList.remove('hidden');
+      document.getElementById('message').textContent = "📨 Verification code sent to your email.";
     };
 
     async function verifyCode() {
@@ -48,8 +138,12 @@
       document.getElementById('message').textContent = text;
 
       if (text.includes("verified")) {
-        window.location.href = "/Frontend/login.html";
+        window.location.href = "/frontend/login.html";
       }
+    }
+
+    function goToLogin() {
+      window.location.href = "/frontend/login.html";
     }
   </script>
 </body>
