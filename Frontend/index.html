@@ -407,7 +407,55 @@ function submitForm() {
         submitButton.textContent = 'Submit';
     });
 }
+// ⬇️ Auto-match logic from localStorage
+fetch('/test.txt') // Adjust this path based on where you serve the JSON
+  .then(res => res.json())
+  .then(funderRules => {
+    const borrower = JSON.parse(localStorage.getItem('borrowerData')) || {};
+    const fico = parseInt(borrower.fico || 0);
+    const rev = parseInt((borrower.revenue && borrower.revenue !== '-' ? borrower.revenue : borrower.amount || '0').replace(/[^0-9]/g, ''));
+    const tib = parseInt(borrower.tib_months || (borrower.tib?.match(/\d+/)?.[0] ?? 0));
+    const industry = (borrower.industry || '').toLowerCase();
+    const state = (borrower.state || '').toUpperCase();
 
+    console.log('Borrower:', { fico, rev, tib, industry, state });
+
+    document.querySelectorAll('.lender').forEach(el => {
+      const name = el.textContent.trim().replace(/\s+/g, '').replace(/[^a-zA-Z]/g, '');
+
+      const funder = Object.entries(funderRules).find(([key]) => 
+        key.toLowerCase().replace(/[^a-z]/g, '') === name.toLowerCase()
+      );
+      if (!funder) return;
+
+      const [lenderName, rule] = funder;
+
+      const minFICO = rule.minFICO || 0;
+      const minRev = rule.minRevenueMonthly || 0;
+      const minTIB = rule.minTIB || 0;
+
+      const industryPass = !((rule.restrictedIndustries || []).some(r => industry.includes(r.toLowerCase())));
+      const statePass = !((rule.restrictedStates || []).includes(state));
+
+      let conditionalDecline = false;
+      if (rule.conditionalDeclineRules) {
+        for (let cond of rule.conditionalDeclineRules) {
+          const i = (cond.industry || '').toLowerCase();
+          if (industry.includes(i)) {
+            if (cond.revenueLT && rev < cond.revenueLT) {
+              conditionalDecline = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (fico >= minFICO && rev >= minRev && tib >= minTIB && industryPass && statePass && !conditionalDecline) {
+        el.classList.add('selected');
+      }
+    });
+  })
+  .catch(err => console.error('Auto-match fetch error:', err))
 
     </script>
 </body>
