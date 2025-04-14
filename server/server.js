@@ -6,14 +6,13 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
 require('dotenv').config();
-app.use(bodyParser.json({ limit: '120mb' }));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-const loginRoutes = require('./login');
-app.use(loginRoutes);
+
+
 
 const verifyGoogleToken = require('./auth');
 const requireRegisteredUser = require('./authz');
@@ -42,8 +41,11 @@ const lenderEmailMap = (() => {
 })();
 
 app.use(cors());
+app.use(bodyParser.json({ limit: '120mb' }));
 app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'Frontend')));
+const loginRoutes = require('./login');
+app.use(loginRoutes);
 
 app.use('/api', signupRoutes);
 
