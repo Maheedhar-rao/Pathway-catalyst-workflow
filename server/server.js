@@ -64,6 +64,12 @@ app.get('/api/dashboard-data', verifyGoogleToken, requireRegisteredUser, async (
   if (error) return res.status(500).json({ message: 'Error loading submissions', error });
   res.json(data);
 });
+app.get('/api/config', (req, res) => {
+  res.json({
+    googleClientId: process.env.GOOGLE_CLIENT_ID
+  });
+});
+
 
 const upload = multer({ dest: 'uploads/' });
 
