@@ -6,7 +6,7 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
 require('dotenv').config();
-
+app.use(bodyParser.json({ limit: '120mb' }));
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -42,7 +42,6 @@ const lenderEmailMap = (() => {
 })();
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '120mb' }));
 app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'Frontend')));
 
