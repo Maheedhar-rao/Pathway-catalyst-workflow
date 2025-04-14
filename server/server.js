@@ -55,6 +55,15 @@ app.get('/', (req, res) => {
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
 });
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend', 'dashboard.html'));
+});
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend', 'pdf.html'));
+});
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend', 'thankyou.html'));
+});
 
 app.get('/api/me', verifyGoogleToken, requireRegisteredUser, (req, res) => {
   res.json({ email: req.user.email, role: req.user.role });
