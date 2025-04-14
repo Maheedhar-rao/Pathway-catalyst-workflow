@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🐊 CROC || Login </title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <h2>🐊 Login to Your CRM</h2>
+  <div id="g_id_onload"
+       data-client_id="YOUR_GOOGLE_CLIENT_ID"
+       data-callback="handleCredentialResponse">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <script>
+    async function handleCredentialResponse(response) {
+      const idToken = response.credential;
+      localStorage.setItem("id_token", idToken);
+
+      const res = await fetch("/api/me", {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
+
+      if (res.ok) {
+        window.location.href = "/Frontend/dashboard.html";
+      } else {
+        alert("❌ You're not authorized to use this CRM yet.");
+        localStorage.removeItem("id_token");
+      }
+    }
+  </script>
+</body>
+</html>
