@@ -1,0 +1,918 @@
+{
+  "AmericanChoice": {
+    "positionsAccepted": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "minFICO": 550,
+    "minRevenueMonthly": 15000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 10,
+    "fundingRange": { "min": 10000, "max": 1000000 },
+    "minDepositsPerMonth": 5,
+    "minADB": 1000,
+    "bankruptcyPolicy": "No open or past bankruptcies",
+    "lienPolicy": "Must be paid, released, or in active payment plan",
+    "autoDecline": [
+      "5 or more concurrent advances",
+      "Constant reckless funding"
+    ],
+    "restrictedIndustries": [
+      "Non-Profits", "Credit Protection", "Collection Agencies", "Debt Buyers",
+      "Tax Reduction Services", "Mailing Houses", "Title Companies",
+      "Loan/Finance Companies", "Real Estate", "Trucking (< 100k revenue)",
+      "Construction (< 50k revenue)", "Auto Sales (< 100k or 1st pos)", "Adult Entertainment"
+    ],
+    "conditionalDeclineRules": [
+      { "industry": "trucking", "revenueLT": 100000 },
+      { "industry": "construction", "revenueLT": 50000 },
+      { "industry": "auto sales", "revenueLT": 100000 }
+    ]
+  },
+  "AlternativeFunder": {
+    "positionsAccepted": [1, 2, 3, 4],
+    "minFICO": 550,
+    "minRevenueMonthly": 20000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 4,
+    "minADB": 1000,
+    "ownershipRequired": 51,
+    "maxTermDays": 200,
+    "bankruptcyPolicy": {
+      "1stPosition": false,
+      "2ndTo4th": "Only if older than 8 years"
+    },
+    "restrictedIndustries": [
+      "Bail Bonds", "Cannabis", "Check Cashing", "Crypto", "Stockbrokers",
+      "Financial Firms", "Lawyers", "Auto Sales", "Mechanic", "Real Estate"
+    ],
+    "industryOverrides": {
+      "Construction": { "minRevenueMonthly": 75000, "minTIB": 36 },
+      "Trucking": { "minRevenueMonthly": 75000, "minTIB": 36 }
+    },
+    "restrictedStates": ["CA"],
+    "conditionalDeclineRules": [
+      { "industry": "construction", "revenueLT": 75000 },
+      { "industry": "trucking", "revenueLT": 75000 }
+    ]
+  },
+  "Arena": {
+    "positionsAccepted": [1, 2, 3, 4],
+    "minFICO": 600,
+    "minRevenueMonthly": 20000,
+    "minTIB": 9,
+    "minDepositsPerMonth": 5,
+    "consolidationProgram": {
+      "positionsAccepted": [1, 2, 3, 4],
+      "maxFunding": 300000,
+      "maxTermDays": 240,
+      "sellRate": 1.399,
+      "buyRate": 1.279,
+      "commission": 12
+    },
+    "regularMCA": {
+      "maxFunding": 25000,
+      "maxTermDays": 80,
+      "sellRate": 1.299,
+      "buyRate": 1.179,
+      "commission": 12
+    },
+    "defaultPolicy": "No defaults (Data Merch, NY Court, Clear)",
+    "pastDueLimit": 5000,
+    "restrictedIndustries": [
+      "Auto Sales", "ATM Machines", "Brokerage/Sales", "Cannabis", "Check Cashing",
+      "Collections", "Construction with limited AR", "Credit Repair", "Transportation"
+    ]
+  },
+  "Aspire": {
+    "positionsAccepted": [2],
+    "minFICO": 500,
+    "minRevenueMonthly": 8333,
+    "minTIB": 9,
+    "minDepositsPerMonth": 3,
+    "minADB": 1000,
+    "maxNSF": 6,
+    "maxNED": 6,
+    "bankruptcyPolicy": "Closed only",
+    "taxLienPolicy": "≤ $100k or on a payment plan",
+    "restrictedIndustries": [
+      "Check Cashing", "Financial Services", "Online Gambling"
+    ],
+    "restrictedStates": ["NY"]
+  },
+  "BarclaysAdvance": {
+    "positionsAccepted": [2, 3, 4],
+    "minFICO": 500,
+    "minRevenueMonthly": 30000,
+    "consolidationPositions": [2, 3, 4, 5, 6, 7, 8],
+    "fundingRange": { "max": 1000000 },
+    "maxTermDays": 110,
+    "sellRateStart": 1.35,
+    "restrictedIndustries": ["Financial Services", "Casinos"]
+  },
+  "BCA": {
+    "positionsAccepted": [2, 3, 4, 5],
+    "restrictedStates": ["CA", "NY", "VA"],
+    "fundingRange": { "min": 5000, "max": 100000 },
+    "minTIB": 6,
+    "minFICO": 500,
+    "minRevenueMonthly": 20000,
+    "preferredIndustries": ["Restaurants", "Retail Sales", "Retail Services", "Pharmacies", "Healthcare"],
+    "highRiskIndustries": ["Car Sales", "Construction", "Jewelry", "Insurance", "Staffing", "Real Estate", "Trucking"],
+    "restrictedIndustries": ["Adult Entertainment", "Cannabis", "Collections", "Credit Repair", "Cruise Lines", "Crypto", "Debt Consolidation", "Foreign Entities", "Gambling", "MLMs", "Non-Profits"]
+  },
+  "Biz2Credit": {
+    "positionsAccepted": [1],
+    "minFICO": 600,
+    "minRevenueMonthly": 40000,
+    "minTIB": 24,
+    "restrictedIndustries": ["Construction", "Used Car Dealership", "Trucking (unless Amazon/FedEx contract)"]
+  },
+  "BroadwayAdvance": {
+    "positionsAccepted": [1, 2, 3, 4],
+    "tiering": {
+      "Gold": {
+        "minFICO": 650,
+        "minRevenueMonthly": 50000,
+        "maxNED": 1,
+        "minDepositsPerMonth": 12,
+        "minADB": 5000
+      },
+      "Silver": {
+        "minFICO": 550,
+        "minRevenueMonthly": 10000,
+        "maxNED": 2,
+        "minDepositsPerMonth": 8,
+        "minADB": 1000
+      },
+      "Bronze": {
+        "minFICO": 500,
+        "minRevenueMonthly": 5000,
+        "maxNED": 4,
+        "minDepositsPerMonth": 6,
+        "minADB": 500
+      }
+    },
+    "restrictedIndustries": ["Bail Bonds", "Auto Sales", "Entertainment", "Check Cashing", "Law Firms", "Construction", "Real Estate", "Financial Product Companies", "Cannabis"]
+  },
+  "BCP": {
+    "positionsAccepted": [1, 2, 3],
+    "restrictedStates": ["CA"],
+    "minFICO": 550,
+    "minRevenueMonthly": 10000,
+    "minTIB": 6,
+    "minFICO": 500,
+    "fundingRange": { "min": 10000, "max": 500000 },
+    "maxTermDays": 200,
+    "preferredIndustries": ["B-C Paper", "D Files (case-by-case)"]
+  },
+  "Capybara": {
+    "positionsAccepted": [2, 3, 4],
+    "restrictedStates": ["CA", "VA", "UT"],
+    "minFICO": 525,
+    "minRevenueMonthly": 25000,
+    "minTIB": 12,
+    "minFICO": 500,
+    "minDepositsPerMonth": 4,
+    "maxTermDays": 300,
+    "restrictedIndustries": ["Staffing", "Non-Profits", "Law Firms", "Banks", "Trucking", "House Flippers", "Auto Sales"]
+  },
+  "CapytalNewco": {
+    "positionsAccepted": [2, 3, 4],
+    "minFICO": 550,
+    "minTIB": 12,
+    "minRevenueMonthly": 15000,
+    "fundingRange": { "min": 10000, "max": 1000000 },
+    "maxNSF": 5,
+    "minDepositsPerMonth": 4,
+    "preferredIndustries": ["Auto Repair", "Convenience Stores", "E-Commerce", "Funeral Homes", "Restaurants", "Medical", "Trucking", "Wholesale", "Construction"]
+  },
+  "Cashfloit": {
+    "positionsAccepted": [1, 2, 3],
+    "restrictedStates": ["AK", "HI", "NY", "UT", "VA"],
+    "fundingRange": { "min": 15000, "max": 200000 },
+    "minRevenueMonthly": 35000,
+    "minTIB": 12,
+    "minFICO": 500,
+    "minDepositsPerMonth": 8,
+    "maxNSF": 7,
+    "restrictedIndustries": ["Adult", "Cannabis", "Construction (<200k)", "Financial Services", "Real Estate", "Trucking (<100k)"],
+    "conditionalDeclineRules": [
+      { "industry": "construction", "revenueLT": 200000 },
+      { "industry": "trucking", "revenueLT": 100000 }
+    ]
+  },
+  "Cashable": {
+    "positionsAccepted": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "restrictedRegions": ["Hawaii", "Alaska", "Puerto Rico", "Canada"],
+    "fundingRange": { "min": 10000, "max": 500000 },
+    "minRevenueMonthly": 25000,
+    "minDepositsPerMonth": 5,
+    "minTIB": 12,
+    "minFICO": 500,
+    "maxNSFsPerMonth": 5,
+    "maxTermDays": 120,
+    "creditCheck": false,
+    "paymentFrequencies": ["Daily", "Weekly"],
+    "restrictedIndustries": [
+      "Auto Sales (if no Auto Repair Services)", "Visa/Passport Services", "Financial Services",
+      "Non-Profits", "All Cash/Zelle Deposit Businesses", "1 Truck Transportation/Trucking"
+    ],
+    "caseByCaseIndustries": ["Consulting", "Marketing", "Law Firms"]
+  },
+  "CreationCapital": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6, 7],
+    "minFICO": 500,
+    "restrictedStates": ["CA"],
+    "minRevenueMonthly": 30000,
+    "minTIB": 6,
+    "bankruptcyPolicy": "Allowed if discharged",
+    "defaultPolicy": "Prior defaults allowed with payment plan or full satisfaction",
+    "fundingRange": { "max": 250000 },
+    "creditGrades": ["C", "D"],
+    "restrictedIndustries": ["Gambling", "Auto Sales", "Religious Institutions", "Pay Day Loans"],
+    "industryOverrides": {
+      "Trucking": {
+        "caseByCase": true,
+        "minTrucks": 4,
+        "minRevenueMonthly": 100000
+      },
+      "Construction": {
+        "caseByCase": true,
+        "notes": "Especially for ground-up projects"
+      }
+    },
+    "commissionRange": { "min": 10, "max": 13 },
+    "conditionalDeclineRules": [
+      { "industry": "trucking", "revenueLT": 100000 }
+    ]
+  },
+   "Cobalt": {
+    "positionsAccepted": [1, 2, 3, 4],
+    "minFICO": 600,
+    "minTIB": 12,
+    "fundingRange": { "min": 10000, "max": 3000000 },
+    "minRevenueMonthly": 40000,
+    "minDepositsPerMonth": 5,
+    "maxNSFsPerMonth": 5,
+    "paymentFrequencies": ["Daily", "Weekly"],
+    "maxTermDays": 200,
+    "softCreditPull": true,
+    "ownershipRequired": 51,
+    "commissionMax": 12,
+    "originationFeeRange": { "min": 5, "max": 10 },
+    "epaOptions": ["30 days", "60 days", "90 days"],
+    "bankVerification": "Manual login only (no Decision Logic)",
+    "uccPolicy": "Filed on all funded deals",
+    "requiredDocs": ["DL", "Voided Check", "Best Contact Email", "Phone Number"],
+    "restrictedIndustries": ["Real Estate", "Check Cashing", "Jewelry", "Bail Bonds", "Lawyers"],
+    "highRiskOverrides": {
+      "Construction": {
+        "minRevenueMonthly": 150000,
+        "minTIB": 24
+      },
+      "Trucking": {
+        "minRevenueMonthly": 150000
+      },
+      "Auto Sales": {
+        "minRevenueMonthly": 500000,
+        "minTIB": 60
+      }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "construction", "revenueLT": 150000 },
+      { "industry": "trucking", "revenueLT": 150000 },
+      { "industry": "auto sales", "revenueLT": 500000 }
+    ]
+  },
+  "EAdvance": {
+    "positionsAccepted": [1],
+    "restrictedStates": ["CA", "Montana", "UT"],
+    "fundingRange": { "min": 20000, "max": 250000 },
+    "minFICO": 500,
+    "minTIB": 6,
+    "minRevenueMonthly": 30000,
+    "maxNED": 5,
+    "minDepositsPerMonth": 3,
+    "restrictedIndustries": ["Auto Sales", "Check Cashing", "Consulting", "Financial Services", "Gas Stations", "Property Management", "Real Estate", "Roofing"]
+  },
+  "Eminent": {
+    "positionsAccepted": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "fundingRange": { "min": 10000, "max": 500000 },
+    "minRevenueMonthly": 50000,
+    "terms": "30-130 Days",
+    "paymentFrequencies": ["Weekly"],
+    "defaultPolicy": "Will fund satisfied defaults older than 12 months",
+    "maxNSF": 5,
+    "restrictedIndustries": ["Used Auto", "Financial Companies"]
+  },
+  "EverestVaderGranite": {
+    "positionsAccepted": [3, 4, 5, 6, 7, 8, 9, 10],
+    "fundingRange": { "min": 2600, "max": 15000 },
+    "maxTermMonths": 12,
+    "minTIB": 3,
+    "minFICO": 550,
+    "minRevenueMonthly": 5000,
+    "maxNED": 5,
+    "restrictedIndustries": ["Financial Institutions", "Auto Sales", "Attorneys"]
+  },
+  "Fenix": {
+    "positionsAccepted": [1, 2, 3],
+    "reverseConsolidationPositions": [3, 4, 5],
+    "fundingRange": { "min": 7500, "max": 150000 },
+    "restrictedRegions": ["CA", "Hawaii", "Alaska", "Puerto Rico"],
+    "minRevenueMonthly": 15000,
+    "minDepositsPerMonth": 5,
+    "terms": "4-12 months",
+    "paymentFrequencies": ["Daily", "Weekly"],
+    "minFICO": 500,
+    "minTIB": 12,
+    "bankruptcyPolicy": "No open business or personal",
+    "taxLienPolicy": "≤ $150,000",
+    "restrictedIndustries": ["Auto Dealerships", "Bail Bonds", "Check Cashing", "Collections", "Gambling", "Law Firms", "Oil Services", "Gas Stations", "Trucking", "Home-based Construction (1st pos)"]
+  },
+  "Fintap": {
+    "positionsAccepted": [1, 2, 3],
+    "minFICO": 600,
+    "minTIB": 24,
+    "minRevenueMonthly": 20000,
+    "fundingRange": { "max": 750000 },
+    "firstPositionOverrides": {
+      "minFICO": 650,
+      "noPaymentHistory": true,
+      "minTIB": 48
+    },
+    "restrictedIndustries": ["Auto Sales", "Legal Services", "Financial Services", "THC"]
+  },
+  "MINTFunding": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "minFICO": 550,
+    "minRevenueMonthly": 25000,
+    "minTIB": 9,
+    "maxNegativeDaysPerMonth": 5,
+    "fundingRange": { "min": 5000, "max": 2500000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [
+      "Auto Sales", "Cannabis", "Financial Services", "Law Firms", "Non-Profit",
+      "Solar", "Staffing", "Real Estate"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "Construction": { "minRevenueMonthly": 50000 },
+      "Trucking": { "minRevenueMonthly": 50000, "minFleetSize": 2 },
+      "MicroDeals": {
+        "fundingRange": { "min": 5000, "max": 20000 },
+        "minRevenueMonthly": 20000,
+        "TruckingConstructionMinRev": 25000,
+        "minDeposits": 4,
+        "maxNegativeDaysPerMonth": 6,
+        "minTIB": 6
+      }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "construction", "revenueLT": 50000 },
+      { "industry": "trucking", "revenueLT": 50000 }
+    ]
+  },
+  "MNY": {
+    "positionsAccepted": [3, 4, 5],
+    "minFICO": 600,
+    "minRevenueMonthly": 75000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 4,
+    "fundingRange": { "min": 25000, "max": 500000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "Restaurants": { "minRevenueMonthly": 75000 }
+    },
+    "conditionalDeclineRules": [
+       { "industry": "restaurants", "revenueLT": 75000 }
+    ]
+  },
+  "Moneywell": {
+    "positionsAccepted": [2, 3, 4, 5, 6, 7],
+    "minFICO": 500,
+    "minRevenueMonthly": 100000,
+    "minTIB": 6,
+    "maxNegativeDaysPerMonth": 1,
+    "fundingRange": { "min": 50000, "max": 3500000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Financial Services", "Law Offices"],
+    "restrictedStates": ["NY"],
+    "industryOverrides": {
+      "JudgmentsLiens": "Less than 10% annual gross"
+    }
+  },
+  "MrAdvance": {
+    "positionsAccepted": [1, 2, 3, 4, 5],
+    "minFICO": 550,
+    "minRevenueMonthly": null,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": [
+      "Gas Station", "Auto Sales", "Real Estate", "Insurance",
+      "Property Management", "Debt Collectors", "Trucking/Transportation"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {}
+  },
+  "NitroAdvance": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6, 7],
+    "minFICO": 500,
+    "minRevenueMonthly": 35000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": { "max": 2000000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [
+      "Auto Sales", "Bail Bonds", "Billing Services", "Check Cashing",
+      "Churches", "Collection Agencies", "Credit Repair", "Currency Exchange",
+      "Insurance Brokers", "Mail/Telephone Order", "Mortgage Modification/Broker"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "Consolidation": {
+        "maxPositions": 3,
+        "minNetProceedsPercent": 40
+      },
+      "Trucking": { "minRevenueMonthly": 200000 },
+      "Construction": { "minRevenueMonthly": 200000 },
+      "Deposits": { "min": 5 }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "trucking", "revenueLT": 200000 },
+      { "industry": "construction", "revenueLT": 200000 }
+    ]
+  },
+  "Ocean": {
+    "positionsAccepted": [2, 3, 4],
+    "minFICO": 500,
+    "minRevenueMonthly": 30000,
+    "minTIB": 8,
+    "maxNegativeDaysPerMonth": 0,
+    "fundingRange": { "max": 750000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Casinos", "Financial Brokers", "Funding Institutions"],
+    "restrictedStates": ["CA", "NY"],
+    "industryOverrides": {
+      "Tier1": {
+        "minRevenueMonthly": 200000,
+        "minFICO": 600,
+        "minTIB": 12,
+        "termDays": 110,
+        "buyRate": 1.35,
+        "positionsAccepted": [2, 3, 4]
+      },
+      "Tier2": {
+        "minRevenueMonthly": 30000,
+        "minFICO": 500,
+        "minTIB": 8,
+        "termDays": 110,
+        "buyRate": 1.35,
+        "positionsAccepted": [2, 3, 4],
+        "judgments": "Must be satisfied"
+      },
+      "Positions3to12": {
+        "termDays": 80,
+        "buyRate": 1.39,
+        "positionsAccepted": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      },
+      "ReverseConsolidation": {
+        "positionsAccepted": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "balanceRange": { "min": 100000, "max": 1000000 },
+        "maxNegativeDaysPerMonth": 0,
+        "minRevenueMonthly": 225000,
+        "termDays": 120,
+        "buyRate": 1.499,
+        "maxHoldbackPercent": 35,
+        "minTIB": 15
+      },
+      "FundingCooldown": "6 weeks of payment history required if recently funded",
+      "StatementRequirement": "4 months for CA and NY",
+      "SubmissionTiming": "MTD after the 15th"
+    }
+  },
+  "Radiance": {
+    "positionsAccepted": [1, 2, 3],
+    "minFICO": 520,
+    "minRevenueMonthly": 20000,
+    "minTIB": 6,
+    "maxNegativeDaysPerMonth": 4,
+    "fundingRange": { "min": 10000, "max": 250000 },
+    "preferredIndustries": ["Beauty Parlors", "Industrial", "Medical", "Nail Salons", "Plumbing", "Restaurants", "Retail", "Roofing", "Tech"],
+    "restrictedIndustries": ["Law Firms", "Auto Sales", "Travel Agents", "Trucking", "Brokers", "Nonprofits", "Cannabis", "Oil", "Gas"],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "BuyRate": 1.26,
+      "MinDeposits": 4,
+      "MaxNSFs": 4
+    }
+  },
+  "Rapid": {
+    "positionsAccepted": [1],
+    "minFICO": 550,
+    "minRevenueMonthly": null,
+    "minTIB": 24,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Auto Sales", "Land Development"],
+    "restrictedStates": ["NJ", "RI", "NV", "VT", "SD", "ND", "MT"],
+    "industryOverrides": {
+      "HighRisk": { "minTIB": 36 }
+    }
+  },
+  "RightAwayCapital": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6, 7, 8],
+    "minFICO": 540,
+    "minRevenueMonthly": 50000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 5,
+    "fundingRange": { "min": 50000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "MaxNSFsPerMonth": 10,
+      "Bankruptcies": "1 Year Satisfied",
+      "TaxLiensJudgements": "Payment plan or satisfied",
+      "Defaults": "ZBL document required",
+      "Trucking": { "minRevenueMonthly": 150000, "minFleetSize": 3 },
+      "Construction": { "minRevenueMonthly": 150000 },
+      "AutoSales": { "minRevenueMonthly": 150000 }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "trucking", "revenueLT": 150000 },
+      { "industry": "construction", "revenueLT": 150000 },
+      { "industry": "autosales", "revenueLT": 150000 }
+    ]
+  },
+  "RocketCap": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 500,
+    "minRevenueMonthly": 40000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 7,
+    "fundingRange": { "min": 15000, "max": 1500000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Auto Sales", "Cannabis", "Logistics", "Non-Profits", "Trucking/Transportation"],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "CA_NY": {
+        "minRevenueMonthly": 150000,
+        "minFunding": 100000
+      },
+      "PaymentPlans": ["Daily", "Weekly"],
+      "TermMonths": 10
+    }
+  },
+  "Rowan": {
+    "positionsAccepted": [2, 3],
+    "minFICO": 550,
+    "minRevenueMonthly": 20000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 4,
+    "fundingRange": {},
+    "preferredIndustries": [
+      "Doctors", "Dentist", "Healthcare Equipment", "Pharmacy/Drug Stores", "Therapists/Behavioral Health",
+      "Urgent Care", "Bakeries", "Bars/Nightclubs", "Liquor Stores/Beer/Wine Stores", "Restaurants",
+      "Commercial Cleaning", "Gov’t Contractors", "Manufacturing"
+    ],
+    "restrictedIndustries": [
+      "Nail Salons", "Law Firms/Attorneys", "Financial Services", "Auto Sales",
+      "Non-Profits", "Gambling & Gaming", "Gas Stations", "Real Estate Brokers/Agents/Flippers"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "DeclinesAllowed": false,
+      "NoBankruptcies": true,
+      "MinDeposits": 2,
+      "PaymentPlans": ["Daily", "Weekly"],
+      "TermMonths": { "min": 7, "max": 12 },
+      "HighRisk": {
+        "Trucking": "Additional Scrutiny",
+        "Construction": "Additional Scrutiny"
+      }
+    }
+  },
+  "SFS": {
+    "positionsAccepted": [2, 3, 4, 5, 6],
+    "minFICO": 550,
+    "minRevenueMonthly": 40000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 7,
+    "fundingRange": { "min": 15000, "max": 250000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "MinADB": 1000,
+      "MinDeposits": 4,
+      "MaxNSFs": "5-7 (case by case)",
+      "MaxBouncedPayments": 3,
+      "HighRiskFees": "6%-10%",
+      "StandardFees": "3.5%-5%",
+      "Over100k": "Tax Return required",
+      "IndustryRevenueThresholds": {
+        "Auto": 200000,
+        "Law Firm": 50000,
+        "Commercial Construction": 150000,
+        "Trucking": 100000,
+        "Real Estate": 75000
+      }
+    },
+    "conditionalDeclineRules": [
+        { "industry": "auto", "revenueLT": 200000 },
+        { "industry": "law_firm", "revenueLT": 50000 },
+        { "industry": "commercial_construction", "revenueLT": 150000 },
+        { "industry": "trucking", "revenueLT": 100000 },
+        { "industry": "real_estate", "revenueLT": 75000 }
+    ]
+  },
+  "SmartStep": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 500,
+    "minRevenueMonthly": 10000,
+    "minTIB": 24,
+    "maxNegativeDaysPerMonth": 5,
+    "fundingRange": {},
+    "preferredIndustries": [
+      "Auto Repair", "Bars", "Beauty & Barber", "Child & Residential Care", "Dry Cleaners",
+      "Educational Services", "Gym", "Landscaping", "Medical Services", "Pet Care Services",
+      "Recreational Services", "Retail", "Restaurants", "Spa", "Roofing", "Flooring"
+    ],
+    "restrictedIndustries": [
+      "Shipping", "Internet-only businesses", "Consultants", "Accounting", "Financial Services",
+      "Insurance", "Nonprofits", "Advertising/Marketing", "Mining", "Auto Dealerships",
+      "Brokers", "Building Managers", "Engineering Services", "Hospice", "Manufacturing",
+      "Movie Production", "Nail Salons", "Oil/Gas", "Gas Stations", "Real Estate Management",
+      "Retail Electronics", "Used Merchandise Resale", "Staffing Services", "Telecommunications",
+      "Trucking", "Transportation Services"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "CCSplit": {
+        "RequiredStatements": "4 months",
+        "YieldRange": "1.33 - 1.37"
+      },
+      "SetUpFees": {
+        "Standard": "1.5%",
+        "Over250k": "3%"
+      },
+      "AvgDeposits": 8,
+      "MinAvgBankDeposits": 10000,
+      "MinAvgProcessing": 4000,
+      "MinBatches": 4,
+      "Overdrafts": {
+        "CC": 10,
+        "TDA": 5
+      },
+      "MaxOpenAdvances": 2,
+      "MaxBalance": 100000,
+      "Contractors": {
+        "TIB": 60,
+        "SoleProps": false
+      },
+      "CleaningServices": {
+        "TIB": 120,
+        "SoleProps": false
+      }
+    }
+  },
+  "SmarterMerchant": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6],
+    "minFICO": 500,
+    "minRevenueMonthly": 30000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 6,
+    "fundingRange": { "max": 250000 },
+    "preferredIndustries": [
+      "Animal Boarding", "Auto Part Rental", "Bakeries", "Bed & Breakfasts", "Dental",
+      "E-Commerce", "Flooring", "Florist", "Healthcare", "Liquor Stores", "Medical Offices",
+      "Medical Laboratories", "Medical Equipment/Supply", "Nursing Care Facility",
+      "Restaurants", "Veterinarians"
+    ],
+    "restrictedIndustries": [],
+    "restrictedStates": ["CA"],
+    "industryOverrides": {
+      "Construction": { "minRevenueMonthly": 75000 },
+      "Trucking": { "minRevenueMonthly": 75000 },
+      "Deposits": { "min": 8 },
+      "Renewals": { "at": "50% paid in" }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "construction", "revenueLT": 75000 },
+      { "industry": "trucking", "revenueLT": 75000 }
+    ]
+  },
+  "Spartan": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 550,
+    "minRevenueMonthly": 15000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": [
+      "Non-profit", "Marijuana", "Auto/Recreational Dealers", "Guns/Firearms Vendors",
+      "Loan Brokers", "Financial Services"
+    ],
+    "restrictedStates": ["CA"],
+    "industryOverrides": {
+      "Trucking": { "minRevenueMonthly": 200000 },
+      "Real Estate": { "avgRevenueMonthly": 100000 },
+      "Auto/RV/Boat Sales": { "avgRevenueMonthly": 100000 },
+      "No1stPos": ["Construction", "Roofing", "Staffing", "Lawyers", "Travel Agency"]
+    },
+    "conditionalDeclineRules": [
+       { "industry": "trucking", "revenueLT": 200000 },
+       { "industry": "real estate", "revenueLT": 100000 },
+       { "industry": "auto/rv/boat sales", "revenueLT": 100000 }
+    ]
+  },
+  "SuperfastCap": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 500,
+    "minRevenueMonthly": null,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": ["Retail", "Salons", "Medical", "Plumbers", "HVAC", "Electricians", "Restaurants", "Wholesale"],
+    "restrictedIndustries": ["Construction (except roofing/flooring only)", "Transportation", "Trucking", "Property Management", "Real Estate Agents", "Car Sales", "Non-Profits"],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "FundingCooldown": "30 days from first pull"
+    }
+  },
+  "Torro": {
+    "positionsAccepted": [2, 3, 4, 5, 6, 7, 8],
+    "minFICO": 500,
+    "minRevenueMonthly": 10000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 4,
+    "fundingRange": { "min": 5000, "max": 250000 },
+    "preferredIndustries": ["Auto Repair", "Clothing Retailers", "Computer Programming", "Consulting Services", "Construction", "Educational & Schools", "Fast Food Establishments", "Grocers/Markets", "Health Services", "HVAC", "IT/Networking", "Medical / Dental", "Retail Shops", "Restaurants"],
+    "restrictedIndustries": ["Transportation", "Trucking", "Financial Services"],
+    "restrictedStates": ["NY"],
+    "industryOverrides": {
+      "MinDeposits": 5,
+      "FundingCooldown": "30 days from last funding"
+    }
+  },
+  "TVT": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 600,
+    "minRevenueMonthly": 40000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": { "min": 150000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "Trucking": { "minRevenueMonthly": 350000 },
+      "Construction": { "minRevenueMonthly": 350000 }
+    },
+    "conditionalDeclineRules": [
+      { "industry": "trucking", "revenueLT": 350000 },
+      { "industry": "construction", "revenueLT": 350000 }
+    ]
+  },
+  "Vader": {
+    "positionsAccepted": [3, 4, 5, 6, 7, 8, 9, 10],
+    "minFICO": 500,
+    "minRevenueMonthly": 4000,
+    "minTIB": 1,
+    "maxNegativeDaysPerMonth": 7,
+    "fundingRange": { "min": 2600, "max": 15000 },
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Financial Institutions", "Auto Sales", "Attorneys"],
+    "restrictedStates": [],
+    "industryOverrides": {}
+  },
+  "Velocity": {
+    "positionsAccepted": [1, 2],
+    "minFICO": 500,
+    "minRevenueMonthly": 20000,
+    "minTIB": 6,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": ["Transportation", "Trucking"],
+    "restrictedStates": [],
+    "industryOverrides": {}
+  },
+  "Vivian": {
+    "positionsAccepted": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "minFICO": 550,
+    "minRevenueMonthly": 25000,
+    "minTIB": null,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": ["CPA", "Cannabis"],
+    "restrictedStates": ["CA", "NY"],
+    "industryOverrides": {}
+  },
+  "Vox": {
+    "positionsAccepted": [],
+    "minFICO": 500,
+    "minRevenueMonthly": 10000,
+    "minTIB": 12,
+    "maxNegativeDaysPerMonth": 5,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": [
+      "Adult Entertainment", "Cash Advance Companies", "Credit Card Protection", "Escort Services",
+      "Interior Design", "Real Estate", "Childcare Facility", "Mortgage Lenders", "Marijuana Shops",
+      "Pawn Shops", "Check Cashing", "Used Auto Dealer", "Sole Proprietors", "Wire Transfer Company",
+      "State or Gov’t Agency"
+    ],
+    "restrictedStates": [],
+    "industryOverrides": {
+      "CaseByCaseIndustries": {
+        "FICO": 700,
+        "Funding": 125000,
+        "Medical": 150000,
+        "Industries": [
+          "Accounting Firms", "Barber Shop", "Cleaning Services", "Private Investigator",
+          "Funeral Homes", "Gas Stations", "Handymen", "Home Healthcare", "Import/Export",
+          "Moving Company", "Pool Installation", "Hair/Nail/Skin Services", "Wireless or Cellular"
+        ]
+      },
+      "Trucking": {
+        "minTIB": 36,
+        "minRevenueMonthly": 300000,
+        "minFleetSize": 7,
+        "FICO": 700
+      },
+      "Construction": {
+        "Regular": 90000,
+        "Commercial": 100000,
+        "NewHome": 200000
+      },
+      "OwnershipRequired": "51%",
+      "MinDeposits": 4,
+      "TermMonths": {"min": 2, "max": 12},
+      "Payments": ["Daily", "Weekly"],
+      "TaxLiens": "To be considered"
+    },
+    "conditionalDeclineRules": [
+        { "industry": "trucking", "revenueLT": 300000 },
+        { "industry": "construction", "revenueLT": 90000 }
+    ]
+  },
+  "Wall": {
+    "positionsAccepted": [1],
+    "minFICO": 500,
+    "minRevenueMonthly": 50000,
+    "minTIB": 6,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": [],
+    "industryOverrides": {}
+  },
+  "Wellen": {
+    "positionsAccepted": [1],
+    "minFICO": 525,
+    "minRevenueMonthly": 10000,
+    "minTIB": 24,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": { "min": 10000, "max": 100000 },
+    "preferredIndustries": ["Restaurants", "Retail", "Healthcare"],
+    "restrictedIndustries": [
+      "Accounting Services", "Adult Content", "Agriculture", "Arts & Entertainment",
+      "Attorneys", "Auto Sales", "Consulting", "Financial Services", "Firearms", "Gaming",
+      "Gas Stations", "Lenders", "Marijuana Dispensaries", "Limo Companies", "Mining",
+      "Multi-level Marketing", "Non-Profit", "Public Administration", "Real Estate",
+      "Trucking", "Utilities", "Vape Shops", "Wholesale"
+    ],
+    "restrictedStates": ["UT", "VA"],
+    "industryOverrides": {
+      "MaxPayoffs": 2,
+      "NetRequirement": "Merchant must net 50% after payoff"
+    }
+  },
+  "WGFinancing": {
+    "positionsAccepted": [],
+    "minFICO": 500,
+    "minRevenueMonthly": 25000,
+    "minTIB": 6,
+    "maxNegativeDaysPerMonth": null,
+    "fundingRange": {},
+    "preferredIndustries": [],
+    "restrictedIndustries": [],
+    "restrictedStates": ["CA"],
+    "industryOverrides": {
+      "CCSplitOnly": true,
+      "RequiredDocuments": {
+        "Application": true,
+        "BankStatements": "3 months (4 for CA)",
+        "MerchantStatements": "3 months (4 for CA)"
+      }
+    }
+  }
+}
