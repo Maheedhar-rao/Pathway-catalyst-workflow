@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up | CRM</title>
+</head>
+<body>
+  <h2>🐊 Sign Up for CROC</h2>
+  <form id="signup-form">
+    <input type="email" id="email" required placeholder="Enter your email" />
+    <button type="submit">Send Verification Code</button>
+  </form>
+
+  <div id="code-area" style="display:none;">
+    <input type="text" id="code" maxlength="6" placeholder="Enter 6-digit code" />
+    <button onclick="verifyCode()">Verify Code</button>
+  </div>
+
+  <p id="message"></p>
+
+  <script>
+    let currentEmail = "";
+
+    document.getElementById('signup-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      currentEmail = email;
+
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      document.getElementById('code-area').style.display = 'block';
+      document.getElementById('message').textContent = "📨 Code sent to email.";
+    };
+
+    async function verifyCode() {
+      const code = document.getElementById('code').value;
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, code })
+      });
+
+      const text = await res.text();
+      document.getElementById('message').textContent = text;
+
+      if (text.includes("verified")) {
+        window.location.href = "/Frontend/login.html";
+      }
+    }
+  </script>
+</body>
+</html>
