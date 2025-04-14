@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, '../Frontend', 'index.html')));
 app.use('/api', signupRoutes);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
+  res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
 app.get('/api/me', verifyGoogleToken, requireRegisteredUser, (req, res) => {
