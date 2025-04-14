@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 5000;
 
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const loginRoutes = require('./login');
+app.use(loginRoutes);
 
 const verifyGoogleToken = require('./auth');
 const requireRegisteredUser = require('./authz');
