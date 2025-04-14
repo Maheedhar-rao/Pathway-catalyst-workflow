@@ -55,13 +55,13 @@ app.get('/', (req, res) => {
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
 });
-app.get('/login.html', (req, res) => {
+app.get('/dashboard.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'dashboard.html'));
 });
-app.get('/login.html', (req, res) => {
+app.get('/pdf.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'pdf.html'));
 });
-app.get('/login.html', (req, res) => {
+app.get('/thankyou.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'thankyou.html'));
 });
 
