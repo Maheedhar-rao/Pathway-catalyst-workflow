@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> 🐊 CROC CRM || Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .status {
+      font-weight: bold;
+    }
+    .pending { color: orange; }
+    .complete { color: green; }
+    .partial { color: blue; }
+  </style>
+</head>
+<body>
+  <h2> 🐊 Submissions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Business Name</th>
+        <th>Lenders</th>
+        <th>Status</th>
+        <th>Progress</th>
+        <th>Submitted At</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <!-- Rows will be injected here -->
+    </tbody>
+  </table>
+
+  <script>
+    const token = localStorage.getItem("id_token");
+    if (!token) window.location.href = "/Frontend/login.html";
+
+    async function fetchSubmissions() {
+      const res = await fetch('/api/dashboard-data', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        alert("Unauthorized. Redirecting...");
+        return window.location.href = "/Frontend/login.html";
+      }
+
+      const data = await res.json();
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = '';
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.business_name}</td>
+          <td>${(row.lenders_sent_to || row.lender_names || '').toString().replace(/,/g, ', ')}</td>
+          <td class="status ${row.status}">${row.status}</td>
+          <td>${row.reply_progress || '0/0'}</td>
+          <td>${new Date(row.created_at).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    fetchSubmissions();
+  </script>
+</body>
+</html>
