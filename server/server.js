@@ -42,12 +42,15 @@ const lenderEmailMap = (() => {
 app.use(cors());
 app.use(bodyParser.json({ limit: '120mb' }));
 app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
-app.use(express.static(path.join(__dirname, '../Frontend', 'index.html')));
+app.use(express.static(path.join(__dirname, 'Frontend')));
 
 app.use('/api', signupRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
+});
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
 });
 
 app.get('/api/me', verifyGoogleToken, requireRegisteredUser, (req, res) => {
