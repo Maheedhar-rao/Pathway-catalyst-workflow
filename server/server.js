@@ -42,7 +42,7 @@ const lenderEmailMap = (() => {
 app.use(cors());
 app.use(bodyParser.json({ limit: '120mb' }));
 app.use(bodyParser.urlencoded({ limit: '120mb', extended: true }));
-app.use(express.static(path.join(__dirname, '../Frontend', 'login.html')));
+app.use(express.static(path.join(__dirname, '../Frontend', 'index.html')));
 
 app.use('/api', signupRoutes);
 
