@@ -104,6 +104,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <div id="navbar"></div>
   <script>
     document.getElementById('upload').addEventListener('change', async function (event) {
       const file = event.target.files[0];
@@ -193,6 +194,18 @@
       localStorage.setItem('borrowerData', JSON.stringify(data));
       window.location.href = 'lender.html';
     }
+    async function loadNavbar() {
+    const res = await fetch('/navbar.html');
+    const html = await res.text();
+    document.getElementById('navbar').innerHTML = html;
+  }
+
+  function logout() {
+    localStorage.removeItem("id_token");
+    window.location.href = "/login.html";
+  }
+
+  loadNavbar();
   </script>
 </body>
 </html>
