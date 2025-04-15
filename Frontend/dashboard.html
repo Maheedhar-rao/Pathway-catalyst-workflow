@@ -127,7 +127,7 @@
       </tbody>
     </table>
   </div>
-
+  <div id="navbar"></div>
   <script>
     const token = localStorage.getItem("id_token");
     if (!token) window.location.href = "/login.html";
@@ -170,6 +170,18 @@
     }
 
     fetchSubmissions();
+      async function loadNavbar() {
+    const res = await fetch('/navbar.html');
+    const html = await res.text();
+    document.getElementById('navbar').innerHTML = html;
+  }
+
+  function logout() {
+    localStorage.removeItem("id_token");
+    window.location.href = "/login.html";
+  }
+
+  loadNavbar();
   </script>
 </body>
 </html>
