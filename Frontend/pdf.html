@@ -3,56 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🐊 CROC CRM | Submissions</title>
+  <title>PDF Submission - Extract & Match</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f4;
-      color: #2c3e50;
+      padding: 0;
     }
-
-    #navbar {
-      width: 100%;
+    nav {
+      background: #3271af;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
+    nav h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
     .container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
+      gap: 40px;
       padding: 30px;
-      max-width: 1200px;
-      margin: auto;
     }
-
     .left, .right {
-      flex: 1 1 400px;
+      flex: 1;
       background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     h2 {
-      font-size: 22px;
-      margin-bottom: 15px;
-      color: #3271af;
+      color: #2c3e50;
+      margin-bottom: 10px;
     }
-
     .field {
       margin: 10px 0;
-      font-size: 15px;
     }
-
-    .field input {
-      margin-top: 4px;
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
     .btn {
       margin-top: 20px;
       background: #3271af;
@@ -62,68 +66,45 @@
       font-weight: bold;
       cursor: pointer;
       border-radius: 6px;
-      transition: background 0.3s;
-    }
-
-    .btn:hover {
-      background: #245a87;
-    }
-
-    p {
-      line-height: 1.6;
     }
   </style>
 </head>
 <body>
-  <!-- Universal Navbar -->
-  <div id="navbar"></div>
+  <nav>
+    <h1>Croc.com</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="pdf.html">Submissions</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="documentatio.html">Documentation/API</a></li>
+    </ul>
+  </nav>
 
   <div class="container">
-    <!-- Left: Extracted Fields -->
     <div class="left">
-      <h2>📝 Extracted Info</h2>
+      <h2>Extracted Info</h2>
       <div class="field">FICO: <span id="fico">-</span></div>
       <div class="field">State: <span id="state">-</span></div>
       <div class="field">Time in Business: <span id="tib">-</span></div>
       <div class="field">Industry: <span id="industry">-</span></div>
       <div class="field">Requested Amount: <span id="amount">-</span></div>
-
-      <div class="field">
-        <label>Monthly Revenue</label>
-        <input type="number" id="revenue" placeholder="Enter monthly revenue" />
-      </div>
-      <div class="field">
-        <label>Average Daily Balance (ADB)</label>
-        <input type="number" id="adb" placeholder="Enter ADB" />
-      </div>
-      <div class="field">
-        <label>Negative Days (last 30)</label>
-        <input type="number" id="ned" placeholder="Enter NED count" />
-      </div>
-      <div class="field">
-        <label>Open Positions</label>
-        <input type="number" id="positions" placeholder="e.g. 1st, 2nd" />
-      </div>
-
-      <div class="field">
-        <label>Upload PDF</label>
-        <input type="file" id="upload" accept="application/pdf" />
-      </div>
-
+      <div class="field">Monthly Revenue: <input type="number" id="revenue" placeholder="Enter monthly revenue" /></div>
+      <div class="field">Average Daily Balance (ADB): <input type="number" id="adb" placeholder="Enter ADB" /></div>
+      <div class="field">Negative Days (last 30 days): <input type="number" id="ned" placeholder="Enter NED count" /></div>
+      <div class="field">Open Positions: <input type="number" id="positions" placeholder="e.g. 1st, 2nd" /></div>
+      <input type="file" id="upload" accept="application/pdf" />
       <button class="btn" onclick="saveAndGo()">Find Lenders</button>
     </div>
 
-    <!-- Right: Instructions -->
     <div class="right">
-      <h2>📘 Instructions</h2>
-      <p>Upload a PDF application file and we’ll extract key fields automatically.</p>
-      <p>Then fill in any missing values like revenue, ADB, positions, etc.</p>
-      <p>Once ready, hit <strong>"Find Lenders"</strong> to see auto-matched results based on your data.</p>
+      <h2>Instructions</h2>
+      <p>Upload a PDF application file and we’ll extract key fields from it.</p>
+      <p>Once confirmed, click "Find Lenders" to proceed to the lender dashboard with pre-selected matches.</p>
     </div>
   </div>
 
-  <!-- PDF Logic & Navbar Injection -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <div id="navbar"></div>
   <script>
     document.getElementById('upload').addEventListener('change', async function (event) {
       const file = event.target.files[0];
@@ -148,11 +129,7 @@
 
         const stateFullMatch = fullText.match(/,\s*([A-Za-z ]+),\s*\d{5}\s*United States/i);
         const fullState = stateFullMatch ? stateFullMatch[1].trim() : '-';
-        const stateMap = {
-          "South Carolina": "SC", "North Carolina": "NC", "California": "CA",
-          "New York": "NY", "Texas": "TX", "Florida": "FL", "Georgia": "GA",
-          "Illinois": "IL", "Pennsylvania": "PA"
-        };
+        const stateMap = { "South Carolina": "SC", "North Carolina": "NC", "California": "CA", "New York": "NY", "Texas": "TX", "Florida": "FL", "Georgia": "GA", "Illinois": "IL", "Pennsylvania": "PA" };
         const state = stateMap[fullState] || '-';
 
         const rawDate = (fullText.match(/Start Date[:\s]+(?:[A-Za-z]+,?\s*)?([A-Za-z]+\s+\d{1,2},\s+\d{4})/i) || [])[1] || '-';
@@ -217,19 +194,18 @@
       localStorage.setItem('borrowerData', JSON.stringify(data));
       window.location.href = 'lender.html';
     }
-
     async function loadNavbar() {
-      const res = await fetch('/navbar.html');
-      const html = await res.text();
-      document.getElementById('navbar').innerHTML = html;
-    }
+    const res = await fetch('/navbar.html');
+    const html = await res.text();
+    document.getElementById('navbar').innerHTML = html;
+  }
 
-    function logout() {
-      localStorage.removeItem("id_token");
-      window.location.href = "/login.html";
-    }
+  function logout() {
+    localStorage.removeItem("id_token");
+    window.location.href = "/login.html";
+  }
 
-    loadNavbar();
+  loadNavbar();
   </script>
 </body>
-</html>
+</html> 
