@@ -2,82 +2,171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title> 🐊 CROC CRM || Dashboard</title>
+  <title>🐊 CROC CRM | Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f4f4f4;
-    }
-    h2 {
       color: #2c3e50;
     }
+
+    /* Navigation Bar */
+    nav {
+      background: #2c3e50;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    nav h1 {
+      font-size: 20px;
+    }
+
+    .nav-links a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #4ca1af;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
     table {
       width: 100%;
       background: white;
       border-collapse: collapse;
       margin-top: 20px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
     }
+
     th, td {
-      padding: 12px;
+      padding: 12px 16px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
     }
-    .status {
+
+    th {
+      background-color: #f0f0f0;
       font-weight: bold;
     }
+
+    tr:hover {
+      background-color: #fafafa;
+    }
+
+    .status {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
     .pending { color: orange; }
     .complete { color: green; }
-    .partial { color: blue; }
+    .partial { color: #3498db; }
+
+    .logout-btn {
+      background: #e74c3c;
+      border: none;
+      padding: 8px 12px;
+      color: white;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
+    }
   </style>
 </head>
 <body>
-  <h2> 🐊 Submissions</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Business Name</th>
-        <th>Lenders</th>
-        <th>Status</th>
-        <th>Progress</th>
-        <th>Submitted At</th>
-      </tr>
-    </thead>
-    <tbody id="table-body">
-      <!-- Rows will be injected here -->
-    </tbody>
-  </table>
+  <!-- 🔝 Navigation Bar -->
+  <nav>
+    <h1>🐊 CROC CRM</h1>
+    <div class="nav-links">
+      <a href="/dashboard.html">Home</a>
+      <a href="/pdf.html">Submissions</a>
+      <a href="/coming-soon.html">Documentation/API</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>🐊 Your Submissions</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Business Name</th>
+          <th>Lenders</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Submitted At</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Rows will be injected here -->
+      </tbody>
+    </table>
+  </div>
 
   <script>
     const token = localStorage.getItem("id_token");
-    if (!token) window.location.href = "/Frontend/login.html";
+    if (!token) window.location.href = "/login.html";
 
     async function fetchSubmissions() {
-      const res = await fetch('/api/dashboard-data', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      try {
+        const res = await fetch('/api/dashboard-data', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-      if (!res.ok) {
-        alert("Unauthorized. Redirecting...");
-        return window.location.href = "/Frontend/login.html";
+        if (!res.ok) {
+          alert("Unauthorized. Redirecting to login.");
+          return window.location.href = "/login.html";
+        }
+
+        const data = await res.json();
+        const tbody = document.getElementById("table-body");
+        tbody.innerHTML = '';
+
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.business_name}</td>
+            <td>${(row.lenders_sent_to || row.lender_names || '').toString().replace(/,/g, ', ')}</td>
+            <td class="status ${row.status}">${row.status}</td>
+            <td>${row.reply_progress || '0/0'}</td>
+            <td>${new Date(row.created_at).toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Failed to fetch submissions:", err);
+        alert("Failed to load submissions.");
       }
+    }
 
-      const data = await res.json();
-      const tbody = document.getElementById("table-body");
-      tbody.innerHTML = '';
-
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.business_name}</td>
-          <td>${(row.lenders_sent_to || row.lender_names || '').toString().replace(/,/g, ', ')}</td>
-          <td class="status ${row.status}">${row.status}</td>
-          <td>${row.reply_progress || '0/0'}</td>
-          <td>${new Date(row.created_at).toLocaleString()}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    function logout() {
+      localStorage.removeItem("id_token");
+      window.location.href = "/login.html";
     }
 
     fetchSubmissions();
