@@ -69,6 +69,9 @@ app.get('/navbar.html', (req, res) => {
 app.get('/coming-soon.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'coming-soon.html'));
 });
+app.get('/lender.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Frontend', 'lender.html'));
+});
 
 // Optional stub endpoint (safe to remove)
 app.get('/api/me', (req, res) => {
