@@ -285,26 +285,37 @@
         }
         const selectedFiles = [];
 
-        document.getElementById('file-upload').addEventListener('change', function(event) {
-    const files = Array.from(event.target.files);
-    let totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+document.getElementById('file-upload').addEventListener('change', async function(event) {
+  const files = Array.from(event.target.files);
+  const formData = new FormData();
+  let totalSize = 0;
 
-    for (let file of files) {
-        totalSize += file.size;
-        
-        // Prevent total size exceeding 25MB
-        if (totalSize > 25 * 1024 * 1024) {
-            alert('Total file size exceeds 25MB. Please remove some files.');
-            return;
-        }
-
-        selectedFiles.push(file);
+  for (let file of files) {
+    totalSize += file.size;
+    if (totalSize > 25 * 1024 * 1024) {
+      alert('Total file size exceeds 25MB. Please remove some files.');
+      return;
     }
+    formData.append('files', file);
+  }
 
-    document.getElementById('file-upload').value = ''; // Reset file input
-    updateFileList();
+  const res = await fetch('/api/watermark', {
+    method: 'POST',
+    body: formData
+  });
+
+  const { files: watermarked } = await res.json();
+  selectedFiles.length = 0; // reset
+
+  for (let f of watermarked) {
+    const byteArray = Uint8Array.from(atob(f.data), c => c.charCodeAt(0));
+    const blob = new Blob([byteArray], { type: f.mimetype });
+    selectedFiles.push(new File([blob], f.name, { type: f.mimetype }));
+  }
+
+  document.getElementById('file-upload').value = '';
+  updateFileList();
 });
-
 
 function updateFileList() {
     const fileListDiv = document.getElementById('file-list');
