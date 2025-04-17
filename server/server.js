@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
+const { PDFDocument } = require('pdf-lib');
 require('dotenv').config();
 
 const app = express();
@@ -96,6 +97,50 @@ app.get('/api/config', (req, res) => {
 });
 
 const upload = multer({ dest: 'uploads/' });
+async function addImageWatermarkToAllPages(pdfBuffer, imagePath) {
+  const pdfDoc = await PDFDocument.load(pdfBuffer);
+  const pngImageBytes = fs.readFileSync(imagePath);
+  const pngImage = await pdfDoc.embedPng(pngImageBytes);
+  const pages = pdfDoc.getPages();
+
+  for (const page of pages) {
+    const { width, height } = page.getSize();
+    const pngDims = pngImage.scale(0.3);
+    page.drawImage(pngImage, {
+      x: width / 2 - pngDims.width / 2,
+      y: height / 2 - pngDims.height / 2,
+      width: pngDims.width,
+      height: pngDims.height,
+      opacity: 0.3
+    });
+  }
+
+  return await pdfDoc.save();
+}
+
+app.post('/api/watermark', upload.array('files'), async (req, res) => {
+  try {
+    const logoPath = path.join(__dirname, 'assets', 'pcp-logo.png');
+    const files = [];
+
+    for (const file of req.files) {
+      const buffer = fs.readFileSync(file.path);
+      const watermarked = await addImageWatermarkToAllPages(buffer, logoPath);
+      fs.unlinkSync(file.path); // cleanup
+
+      files.push({
+        name: file.originalname,
+        mimetype: file.mimetype,
+        data: Buffer.from(watermarked).toString('base64'),
+      });
+    }
+
+    res.json({ files });
+  } catch (err) {
+    console.error('Watermark error:', err);
+    res.status(500).json({ message: 'Failed to watermark', error: err });
+  }
+});
 
 app.post('/send-email', upload.array('attachments', 25), async (req, res) => {
   try {
